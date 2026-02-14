@@ -1,0 +1,14 @@
+# Data and Artifacts
+data/
+outputs/
+outputs_old/
+openworld_bench.egg-info/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

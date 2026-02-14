@@ -1,0 +1,77 @@
+# Default hyperparameters for Domain Generalization methods
+
+# PEGO - Parameter-Efficient Group Orthogonal Regularization
+pego:
+  num_groups: 4
+  ortho_weight: 0.1
+  rank: 4
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# IRM - Invariant Risk Minimization
+irm:
+  penalty_weight: 1.0       # Weight for invariance penalty
+  penalty_anneal_iters: 500 # Iterations before full penalty
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# VREx - Variance Risk Extrapolation
+vrex:
+  penalty_weight: 1.0       # Weight for variance penalty
+  penalty_anneal_iters: 500 # Iterations before full penalty
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# CORAL - Correlation Alignment
+coral:
+  coral_weight: 1.0         # Weight for CORAL loss
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# SWAD - Stochastic Weight Averaging Densely
+swad:
+  start_step: 500           # When to start averaging
+  end_step: 5000            # When to stop averaging
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# MIRO - Mutual Information Regularization with Oracle
+miro:
+  miro_weight: 0.1          # Weight for MIRO loss
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# EoA - Ensemble of Averages
+eoa:
+  num_domains: 4            # Number of domain-specific classifiers
+  ensemble_weight: 0.5      # Weight for ensemble vs shared
+  epochs: 50
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9

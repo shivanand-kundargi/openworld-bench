@@ -1,0 +1,101 @@
+# Experiment configurations for cross-setting evaluation
+
+# ==========================================
+# Native Setting Experiments (Baselines)
+# ==========================================
+
+native_da:
+  description: "DA methods on DA setting"
+  methods: [dann, cdan, mcd, toalign, pmtrans]
+  datasets: [domainnet, office_home]
+  setting: da
+  seeds: [0, 1, 2]
+  backbone: resnet50
+  epochs: 30
+
+native_dg:
+  description: "DG methods on DG setting"
+  methods: [irm, vrex, coral, swad, miro, eoa]
+  datasets: [domainnet, office_home]
+  setting: dg
+  seeds: [0, 1, 2]
+  backbone: resnet50
+  epochs: 50
+
+native_cl:
+  description: "CL methods on CL setting"
+  methods: [icarl, der, lwf, coda_prompt, xder, memo]
+  datasets: [imagenet_r, cub200, stanford_cars, inaturalist]
+  setting: cl
+  seeds: [0, 1, 2]
+  backbone: resnet50
+  epochs_per_task: 10
+  n_tasks: 10
+  buffer_size: 500
+
+# ==========================================
+# Cross-Setting Experiments
+# ==========================================
+
+# DA methods → other settings
+da_on_cl:
+  description: "DA methods evaluated in CL setting"
+  methods: [dann, cdan, mcd, toalign, pmtrans]
+  datasets: [imagenet_r, cub200, inaturalist]
+  setting: cl
+  seeds: [0, 1, 2]
+  expected_outcome: "very_poor"
+  reason: "No mechanism to prevent forgetting"
+
+da_on_dg:
+  description: "DA methods evaluated in DG setting"
+  methods: [dann, cdan, mcd, toalign, pmtrans]
+  datasets: [domainnet, office_home]
+  setting: dg
+  seeds: [0, 1, 2]
+  expected_outcome: "poor"
+  reason: "No target data during training - adversarial loss overfits to source"
+
+# DG methods → other settings  
+dg_on_cl:
+  description: "DG methods evaluated in CL setting"
+  methods: [irm, vrex, coral, swad, miro, eoa]
+  datasets: [imagenet_r, cub200, inaturalist]
+  setting: cl
+  seeds: [0, 1, 2]
+  expected_outcome: "very_poor"
+  reason: "No multi-domain signal in single task - invariance penalty is trivial"
+
+dg_on_da:
+  description: "DG methods evaluated in DA setting"
+  methods: [irm, vrex, coral, swad, miro, eoa]
+  datasets: [domainnet, office_home]
+  setting: da
+  seeds: [0, 1, 2]
+  expected_outcome: "moderate"
+  reason: "Can learn invariant features but misses opportunity to adapt to target"
+
+# CL methods → other settings
+cl_on_da:
+  description: "CL methods evaluated in DA setting"
+  methods: [icarl, der, lwf, coda_prompt, xder, memo]
+  datasets: [domainnet, office_home]
+  setting: da
+  seeds: [0, 1, 2]
+  expected_outcome: "moderate"
+  reason: "Buffer provides cross-domain memory but lacks explicit alignment"
+
+cl_on_dg:
+  description: "CL methods evaluated in DG setting"
+  methods: [icarl, der, lwf, coda_prompt, xder, memo]
+  datasets: [domainnet, office_home]
+  setting: dg
+  seeds: [0, 1, 2]
+  expected_outcome: "moderate"
+  reason: "Buffer maintains diversity but no invariance objective"
+
+# ==========================================
+# Experiment Summary
+# ==========================================
+# Total experiments: 15 methods × 9 settings × 3 seeds = 405 runs
+# Estimated compute: 5-6 days on 6× L40S GPUs

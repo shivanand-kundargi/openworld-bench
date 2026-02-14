@@ -1,0 +1,106 @@
+# Default hyperparameters for Continual Learning methods
+
+# EWC - Elastic Weight Consolidation
+ewc:
+  e_lambda: 0.5           # Regularization strength
+  gamma: 1.0              # Decay factor for online EWC
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# L2P - Learning to Prompt
+l2p:
+  pool_size: 10
+  prompt_length: 5
+  top_k: 5
+  embedding_key: 'cls'
+  prompt_init: 'uniform'
+  batchwise_prompt: true
+  epochs_per_task: 10
+  batch_size: 16          # ViT requires smaller batch
+  lr: 0.03
+  weight_decay: 0.0
+  optimizer: adam
+
+# DualPrompt
+dualprompt:
+  g_prompt_length: 5
+  e_prompt_length: 20
+  e_pool_size: 10
+  top_k: 1
+  epochs_per_task: 10
+  batch_size: 16
+  lr: 0.03
+  weight_decay: 0.0
+  optimizer: adam
+
+# iCaRL - Incremental Classifier and Representation Learning
+icarl:
+  buffer_size: 2000        # Memory buffer size
+  alpha: 1.0               # Distillation weight
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# DER - Dark Experience Replay
+der:
+  buffer_size: 500         # Memory buffer size
+  alpha: 0.3               # Weight for logit matching
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# LwF - Learning without Forgetting
+lwf:
+  alpha: 1.0               # Distillation weight
+  temperature: 2.0         # Distillation temperature
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# CODA-Prompt - Continual Decomposed Attention-based Prompting
+coda_prompt:
+  pool_size: 20            # Prompt pool size
+  prompt_length: 8         # Length of each prompt
+  top_k: 5                 # Top-k prompts to select
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.01
+  weight_decay: 0.0001
+  optimizer: adam
+
+# X-DER - Extended Dark Experience Replay
+xder:
+  buffer_size: 500         # Memory buffer size
+  alpha: 0.3               # Weight for past logits
+  beta: 0.5                # Weight for future logits
+  m: 0.3                   # Margin for logit adjustment
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# MEMO - Memory Efficient Online Learning
+memo:
+  buffer_size: 200         # Memory buffer size
+  momentum: 0.99           # Prototype update momentum
+  temperature: 0.1         # Contrastive temperature
+  epochs_per_task: 10
+  batch_size: 32
+  lr: 0.03
+  weight_decay: 0.0001
+  optimizer: sgd

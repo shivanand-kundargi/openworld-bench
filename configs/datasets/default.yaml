@@ -1,0 +1,42 @@
+# Default configuration for openworld-bench
+
+# Model defaults
+model:
+  backbone: resnet50
+  pretrained: true
+  feature_dim: 2048
+  
+# Training defaults  
+training:
+  optimizer: sgd
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0001
+  scheduler: cosine
+  warmup_epochs: 5
+  
+# Data defaults
+data:
+  batch_size: 32
+  num_workers: 4
+  pin_memory: true
+  image_size: 224
+  
+# Logging
+logging:
+  log_interval: 100
+  save_interval: 5
+  use_wandb: false
+  wandb_project: "openworld-bench"
+  
+# Paths
+paths:
+  data_root: ./data
+  output_root: ./outputs
+  checkpoint_root: ./checkpoints
+
+# Reproducibility
+reproducibility:
+  seed: 0
+  deterministic: true
+  benchmark: false

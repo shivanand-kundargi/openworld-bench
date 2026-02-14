@@ -1,0 +1,82 @@
+# Dataset configurations
+
+# DomainNet - Large-scale multi-domain dataset
+domainnet:
+  domains:
+    - clipart
+    - infograph
+    - painting
+    - quickdraw
+    - real
+    - sketch
+  num_classes: 345
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  # Default DA/DG splits
+  da_default:
+    source: [real, sketch, painting, clipart, infograph]
+    target: quickdraw
+  dg_default:
+    train_domains: [real, sketch, painting, clipart, infograph]
+    test_domain: quickdraw
+
+# Office-Home - Standard domain adaptation benchmark
+office_home:
+  domains:
+    - Art
+    - Clipart  
+    - Product
+    - Real_World
+  num_classes: 65
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  train_ratio: 0.8
+  # Default DA/DG splits
+  da_default:
+    source: [Art, Clipart, Product]
+    target: Real_World
+  dg_default:
+    train_domains: [Art, Clipart, Product]
+    test_domain: Real_World
+
+# ImageNet-R - ImageNet Renditions for CL
+imagenet_r:
+  num_classes: 200
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  # CL task splits
+  n_tasks: 10
+  classes_per_task: 20
+
+# CUB-200 - Fine-grained bird classification
+cub200:
+  num_classes: 200
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  # CL task splits
+  n_tasks: 10
+  classes_per_task: 20
+
+# Stanford Cars - Fine-grained car classification
+stanford_cars:
+  num_classes: 196
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  # CL task splits
+  n_tasks: 10
+  classes_per_task: 19
+
+# iNaturalist - Species classification
+inaturalist:
+  max_classes: 500
+  image_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  # CL task splits
+  n_tasks: 10
+  classes_per_task: 50

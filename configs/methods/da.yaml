@@ -1,0 +1,71 @@
+# Default hyperparameters for Domain Adaptation methods
+
+# DAPL - Domain Adaptation via Prompt Learning
+dapl:
+  n_ctx: 16               # Prompt context length
+  optimizer: sgd
+  lr: 0.002               # Lower LR for prompt tuning usually
+  batch_size: 32
+  epochs: 30
+
+# DANN - Domain-Adversarial Neural Networks
+dann:
+  trade_off: 1.0           # Weight for domain adversarial loss
+  hidden_size: 1024        # Domain discriminator hidden size
+  grl_alpha: 1.0           # Gradient reversal layer alpha
+  epochs: 30
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# CDAN - Conditional Domain Adversarial Networks
+cdan:
+  trade_off: 1.0           # Weight for conditional domain loss
+  hidden_size: 1024        # Domain discriminator hidden size
+  use_random: true         # Use randomized multilinear map
+  random_dim: 1024         # Dimension after random projection
+  epochs: 30
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# MCD - Maximum Classifier Discrepancy
+mcd:
+  trade_off: 1.0           # Weight for discrepancy loss
+  num_k: 4                 # Number of steps for classifier update
+  epochs: 30
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# ToAlign - Task-oriented Alignment
+toalign:
+  trade_off: 1.0           # Weight for domain loss
+  bottleneck_dim: 256
+  temperature: 0.05        # Temperature for task weight computation
+  hidden_size: 1024
+  epochs: 30
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
+
+# PMTrans - Prototypical Matching Transformer
+pmtrans:
+  trade_off: 1.0           # Weight for entropy loss
+  bottleneck_dim: 256
+  num_heads: 4             # Attention heads
+  pool_size: 20            # Number of prototypes per class
+  epochs: 30
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  optimizer: sgd
+  momentum: 0.9
