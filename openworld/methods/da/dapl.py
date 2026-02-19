@@ -190,7 +190,9 @@ class DAPL(DAMethod):
 
     def parameters(self):
         # Optimize prompts only
-        return list(self.ctx_agnostic.parameters()) + \
-               list(self.ctx_source.parameters()) + \
-               list(self.ctx_target.parameters()) + \
+        return [self.ctx_agnostic, self.ctx_source, self.ctx_target] + \
                list(self.text_projection.parameters())
+
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Override to only tune prompts and text projection with full LR."""
+        return [{"params": self.parameters(), "lr": base_lr}]

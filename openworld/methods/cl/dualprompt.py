@@ -116,6 +116,10 @@ class DualPrompt(CLMethod):
     def parameters(self):
         return [p for p in self.net.model.parameters() if p.requires_grad]
 
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Override to only tune prompts and head with full LR."""
+        return [{"params": self.parameters(), "lr": base_lr}]
+
     def forward(self, x):
         res = self.net(x, task_id=-1, train=False, return_outputs=True)
         logits = res['logits']

@@ -169,6 +169,10 @@ class CodaPrompt(CLMethod):
         """Only optimize prompt parameters + classifier (backbone is frozen)."""
         return list(self.net.prompt.parameters()) + list(self.net.last.parameters())
 
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Override to only tune prompts and head with full LR."""
+        return [{"params": self.parameters(), "lr": base_lr}]
+
     def state_dict(self) -> Dict:
         return {'net': self.net.state_dict()}
 

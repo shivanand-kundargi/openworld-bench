@@ -91,5 +91,9 @@ class L2P(CLMethod):
     def parameters(self):
         return [p for n, p in self.net.model.named_parameters() if 'prompt' in n or 'head' in n]
 
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Override to only tune prompts and head with full LR."""
+        return [{"params": self.parameters(), "lr": base_lr}]
+
     def forward(self, x):
         return self.net(x)[:, :self.n_seen_classes]

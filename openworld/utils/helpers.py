@@ -119,3 +119,15 @@ def load_checkpoint(model, optimizer, path: str):
     if optimizer is not None and 'optimizer' in state:
         optimizer.load_state_dict(state['optimizer'])
     return state.get('epoch', 0)
+
+from torch.optim.lr_scheduler import LambdaLR
+
+def get_inv_lr_scheduler(optimizer, max_iters, alpha=10.0, beta=0.75):
+    """
+    Inverse learning rate scheduler commonly used in DA/DG methods.
+    lr = init_lr * (1 + alpha * iter / max_iters) ^ (-beta)
+    """
+    def lr_lambda(current_iter):
+        return (1.0 + alpha * float(current_iter) / max_iters) ** (-beta)
+    
+    return LambdaLR(optimizer, lr_lambda)

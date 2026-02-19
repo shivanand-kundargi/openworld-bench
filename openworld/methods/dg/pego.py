@@ -168,3 +168,7 @@ class PEGO(DGMethod):
     def parameters(self):
         # Optimize adapters + classifier
         return list(self.adapters.parameters()) + list(self.classifier.parameters())
+
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Override to only tune adapters and classifier with full LR."""
+        return [{"params": self.parameters(), "lr": base_lr}]

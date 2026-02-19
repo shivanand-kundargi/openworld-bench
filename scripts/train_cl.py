@@ -180,8 +180,13 @@ def main():
     )
     
     # Optimizer
+    if hasattr(method, 'get_parameters'):
+        params = method.get_parameters(base_lr=args.lr)
+    else:
+        params = method.parameters()
+
     optimizer = optim.SGD(
-        method.parameters(), lr=args.lr,
+        params, lr=args.lr,
         momentum=0.9, weight_decay=args.weight_decay
     )
     

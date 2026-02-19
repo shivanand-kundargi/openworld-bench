@@ -28,6 +28,7 @@ openworld-bench evaluates how methods designed for one learning paradigm (DA, DG
 | MCD | Classic | CVPR 2018 |
 | ToAlign | Recent | ICLR 2023 |
 | PMTrans | Recent | CVPR 2023 |
+| DAPL | Recent | - |
 
 ### Domain Generalization (DG)
 | Method | Type | Paper |
@@ -37,15 +38,17 @@ openworld-bench evaluates how methods designed for one learning paradigm (DA, DG
 | CORAL | Classic | ECCV 2016 |
 | SWAD | Recent | NeurIPS 2021 |
 | MIRO | Recent | ECCV 2022 |
+| EoA | Recent | ICLR 2023 |
+| PEGO | Recent | - |
 
 ### Continual Learning (CL)
 | Method | Type | Paper |
 |--------|------|-------|
 | iCaRL | Classic | CVPR 2017 |
-| DER | Classic | NeurIPS 2020 |
-| LwF | Classic | ECCV 2016 |
+| EWC | Classic | PNAS 2017 |
+| L2P | Recent | CVPR 2022 |
 | CODA-Prompt | Recent | CVPR 2023 |
-| X-DER | Recent | TPAMI 2023 |
+| DualPrompt | Recent | ECCV 2022 |
 
 ---
 
@@ -58,7 +61,6 @@ openworld-bench evaluates how methods designed for one learning paradigm (DA, DG
 | ImageNet-R | 200 | 10 tasks | CL |
 | CUB-200 | 200 | 10 tasks | CL/FGVC |
 | Stanford Cars | 196 | - | FGVC |
-| FGVC-Aircraft | 100 | - | FGVC |
 | iNaturalist | 1000 | 10 tasks | CL/FGVC |
 
 ---

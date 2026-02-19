@@ -30,7 +30,7 @@ import numpy as np
 # Add parent directory
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from openworld.utils.helpers import set_seed, get_backbone, setup_logging, save_checkpoint
+from openworld.utils.helpers import set_seed, get_backbone, setup_logging, save_checkpoint, get_inv_lr_scheduler
 from openworld.metrics.cl_metrics import CLMetrics
 from openworld.metrics.da_metrics import DAMetrics
 from openworld.metrics.dg_metrics import DGMetrics
@@ -593,12 +593,14 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
         logger.info("  WARNING: DG→DA is equivalent to native DG (target unused)")
         logger.info(f"  Using {len(domain_names)} source domains: {domain_names}")
 
+        min_len = min(len(l) for l in source_domain_loaders.values())
+        lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * min_len)
+
         for epoch in range(args.epochs):
             method.train()
             epoch_loss, n_batches = 0.0, 0
 
             domain_iters = {d: iter(l) for d, l in source_domain_loaders.items()}
-            min_len = min(len(l) for l in source_domain_loaders.values())
 
             pbar = tqdm(range(min_len), desc=f'Epoch {epoch+1}/{args.epochs}')
             for _ in pbar:
@@ -614,6 +616,7 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
                 optimizer.zero_grad()
                 losses = method.observe(x_list, y_list)
                 optimizer.step()
+                lr_scheduler.step()
                 lv = losses.get('total_loss', 0)
                 if isinstance(lv, torch.Tensor): lv = lv.item()
                 epoch_loss += lv; n_batches += 1
@@ -642,6 +645,7 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
                 method.begin_task(task_id, 0)  # 0 = not class-incremental
 
             domain_loader = source_domain_loaders[dname]
+            lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * len(domain_loader))
 
             for epoch in range(args.epochs):
                 method.train()
@@ -654,6 +658,7 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
                     optimizer.zero_grad()
                     losses = method.observe(x, y, task_id)
                     optimizer.step()
+                    lr_scheduler.step()
                     lv = losses.get('total_loss', 0)
                     if isinstance(lv, torch.Tensor): lv = lv.item()
                     epoch_loss += lv; n_batches += 1
@@ -676,6 +681,8 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
         # =====================================================================
         # DA → DA (native): standard source + target adversarial training
         # =====================================================================
+        lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * len(source_loader))
+
         for epoch in range(args.epochs):
             method.train()
             epoch_loss, n_batches = 0.0, 0
@@ -694,6 +701,7 @@ def train_da_setting(method, method_origin, domain_data, args, optimizer,
                 optimizer.zero_grad()
                 losses = method.observe(src_x, src_y, tgt_x)
                 optimizer.step()
+                lr_scheduler.step()
                 lv = losses.get('total_loss', 0)
                 if isinstance(lv, torch.Tensor): lv = lv.item()
                 epoch_loss += lv; n_batches += 1
@@ -751,11 +759,13 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
         # =====================================================================
         # DG → DG (native): per-domain batches with invariance penalties
         # =====================================================================
+        min_len = min(len(l) for l in source_domain_loaders.values())
+        lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * min_len)
+
         for epoch in range(args.epochs):
             method.train()
             epoch_loss, n_batches = 0.0, 0
             domain_iters = {d: iter(l) for d, l in source_domain_loaders.items()}
-            min_len = min(len(l) for l in source_domain_loaders.values())
 
             pbar = tqdm(range(min_len), desc=f'Epoch {epoch+1}/{args.epochs}')
             for _ in pbar:
@@ -772,6 +782,7 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
                 optimizer.zero_grad()
                 losses = method.observe(x_list, y_list)
                 optimizer.step()
+                lr_scheduler.step()
                 lv = losses.get('total_loss', 0)
                 if isinstance(lv, torch.Tensor): lv = lv.item()
                 epoch_loss += lv; n_batches += 1
@@ -792,11 +803,13 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
         logger.info(f"  DA→DG: cycling domain pairs for adversarial training")
         logger.info(f"  Source domains: {domain_names}")
 
+        min_len = min(len(l) for l in source_domain_loaders.values())
+        lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * min_len)
+
         for epoch in range(args.epochs):
             method.train()
             epoch_loss, n_batches = 0.0, 0
             domain_iters = {d: iter(l) for d, l in source_domain_loaders.items()}
-            min_len = min(len(l) for l in source_domain_loaders.values())
 
             pbar = tqdm(range(min_len), desc=f'Epoch {epoch+1}/{args.epochs}')
             for step in pbar:
@@ -823,6 +836,7 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
                 optimizer.zero_grad()
                 losses = method.observe(src_x, src_y, tgt_x)
                 optimizer.step()
+                lr_scheduler.step()
                 lv = losses.get('total_loss', 0)
                 if isinstance(lv, torch.Tensor): lv = lv.item()
                 epoch_loss += lv; n_batches += 1
@@ -851,6 +865,7 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
                 method.begin_task(task_id, 0)
 
             domain_loader = source_domain_loaders[dname]
+            lr_scheduler = get_inv_lr_scheduler(optimizer, args.epochs * len(domain_loader))
 
             for epoch in range(args.epochs):
                 method.train()
@@ -863,6 +878,7 @@ def train_dg_setting(method, method_origin, domain_data, args, optimizer,
                     optimizer.zero_grad()
                     losses = method.observe(x, y, task_id)
                     optimizer.step()
+                    lr_scheduler.step()
                     lv = losses.get('total_loss', 0)
                     if isinstance(lv, torch.Tensor): lv = lv.item()
                     epoch_loss += lv; n_batches += 1
@@ -943,7 +959,12 @@ def main():
 
         method = get_method(args, backbone, num_classes, device, feat_dim)
         method.to(device)
-        optimizer = optim.SGD(method.parameters(), lr=args.lr,
+        if hasattr(method, 'get_parameters'):
+            params = method.get_parameters(base_lr=args.lr)
+        else:
+            params = method.parameters()
+
+        optimizer = optim.SGD(params, lr=args.lr,
                               momentum=0.9, weight_decay=args.weight_decay)
         logger.info(f"Method: {method.NAME}  Classes: {num_classes}  "
                      f"Tasks: {args.n_tasks}")
@@ -985,7 +1006,12 @@ def main():
 
         method = get_method(args, backbone, num_classes, device, feat_dim)
         method.to(device)
-        optimizer = optim.SGD(method.parameters(), lr=args.lr,
+        if hasattr(method, 'get_parameters'):
+            params = method.get_parameters(base_lr=args.lr)
+        else:
+            params = method.parameters()
+
+        optimizer = optim.SGD(params, lr=args.lr,
                               momentum=0.9, weight_decay=args.weight_decay)
         logger.info(f"Method: {method.NAME}  Classes: {num_classes}")
 

@@ -79,15 +79,6 @@ class ICarl(CLMethod):
             f = F.adaptive_avg_pool2d(f, 1).flatten(1)
         return f
 
-    def _wd(self) -> torch.Tensor:
-        """Manual weight decay (from mammoth iCaRL)."""
-        reg = torch.tensor(0., device=self.device)
-        for p in self.backbone.parameters():
-            reg += p.pow(2).sum()
-        for p in self.classifier.parameters():
-            reg += p.pow(2).sum()
-        return reg
-
     def observe(
         self,
         x: torch.Tensor,
@@ -125,9 +116,6 @@ class ICarl(CLMethod):
 
         # BCE loss (mammoth formulation)
         loss = F.binary_cross_entropy_with_logits(logits, targets)
-
-        # Manual weight decay (mammoth iCaRL)
-        loss += self.wd_reg * self._wd()
 
         # Buffer replay
         buf_loss = torch.tensor(0.0, device=self.device)

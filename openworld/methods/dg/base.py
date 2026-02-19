@@ -103,6 +103,17 @@ class DGMethod(ABC):
         if self.classifier is not None:
             params += list(self.classifier.parameters())
         return params
+
+    def get_parameters(self, base_lr: float = 1.0) -> list:
+        """Get parameter groups with scaled learning rate for the backbone."""
+        params = [
+            {"params": self.backbone.parameters(), "lr": 0.1 * base_lr}
+        ]
+        backbone_params = set(self.backbone.parameters())
+        other_params = [p for p in self.parameters() if p not in backbone_params]
+        if other_params:
+            params.append({"params": other_params, "lr": 1.0 * base_lr})
+        return params
     
     def state_dict(self) -> Dict:
         """Get state dict for checkpointing."""
